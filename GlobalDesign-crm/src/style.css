@@ -1,0 +1,367 @@
+:root{
+  --accent_pink:#D948C1;
+  --accent_red:#F23D3D;
+  --accent_grean:#9AE45E;
+  --accent_blue:#2994C4;
+  --accent_yellow:#F2CE16;
+}
+
+/* Styl dla całego kontenera kontaktów */
+body{
+    background-color: #333;
+    color: #fff;
+    font-weight: 500;
+}
+
+.contacts-container {
+    margin: 20px;
+    font-family: Arial, sans-serif;
+    /* border-left: 15px solid var(--accent_color); */
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+    border-right: 1px solid #333;
+  /* overflow: hidden; */
+    border-radius: 20px
+;
+
+}
+
+h2{
+  text-align: center;
+}
+/* Styl dla nagłówka */
+.table_title {
+    /* color: var(--accent_color); */
+    border-left: none!important;
+    text-shadow: 1px 2px 15px #000a;
+    text-align: start;
+    margin-left: 40px;
+   
+}
+
+/* Styl dla formularza */
+.contacts-container form {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #222;
+    
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Styl dla etykiet i pól formularza */
+.contacts-container label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.contacts-container input[type="text"],
+.contacts-container input[type="email"],
+.contacts-container input[type="tel"],
+.contacts-container input[type="date"],
+.contacts-container select {
+    width: calc(100% - 10px);
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    color: #fff;
+    font-weight: 600;
+}
+
+.date-display{
+  
+  text-align: center;
+  background-color: #333!important;
+  /* width: fit-content!important; */
+  padding:20px 10px!important;
+  border-radius:  20px!important;
+}
+.contacts-container input[type="date"]{
+  background-color: transparent;
+  text-align: center;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+/* Styl dla przycisków */
+.options_btn {
+    padding: 10px 15px;
+    background-color: transparent;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 20px;
+    
+}
+
+.options_btn:hover {
+    background-color: #0056b3;
+}
+
+/* Styl dla tabeli */
+.contacts-container table {
+    width: 100%;
+    border-collapse: collapse;
+    /* margin-top: 20px; */
+  border-left:1px solid #0056b3;
+    border-top-right-radius: 20px; /* Dodaj zaokrąglenie */
+    border-bottom-right-radius: 20px; /* Dodaj zaokrąglenie */
+    overflow: hidden; 
+}
+
+.contacts-container th,
+.contacts-container td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #333;
+    
+    /* border-collapse: collapse; */
+
+}
+
+.contacts-container th {
+    /* background-color: #8400ff; */
+    text-align: center;
+    color: white;
+}
+
+.contacts-container tr:nth-child(even) {
+    background-color: #444;
+}
+
+.contacts-container tr:hover {
+    background-color: #555;
+}
+
+/* Styl dla pól edycyjnych w tabeli */
+.contacts-container input[type="text"],
+.contacts-container input[type="email"],
+.contacts-container input[type="tel"],
+.contacts-container select {
+    background-color: transparent ; /* Ustawiamy tło na przezroczyste */
+    border: none !important; /* Usuwamy border */
+    width: calc(100% - 10px);
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+/* Styl dla pól wejściowych w tabeli w trybie focus */
+.contacts-container input[type="text"]:focus,
+.contacts-container input[type="email"]:focus,
+.contacts-container input[type="tel"]:focus,
+.contacts-container select:focus {
+    border: none !important; /* Brak border w trybie focus */
+    outline: none !important; /* Usuwamy outline */
+    /* box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); Można pozostawić cień dla fokusa */
+}
+
+/* Styl dla komórek nagłówka */
+.contacts-container th,
+.contacts-container td {
+    border-radius: 0; /* Upewnij się, że inne rogi są proste */
+}
+
+/* Styl dla komórek tabeli */
+.contacts-container tr:last-child td {
+    border-radius: 0 0 10px 10px; /* Zaokrąglone dolne rogi */
+}
+
+/* Styl dla kolumny checkboxów */
+.contacts-container .checkbox-column {
+    width: 50px; /* Szerokość kolumny checkboxów */
+    text-align: center; /* Centrowanie checkboxów */
+    /* border-radius: 0 !important; */
+}
+
+
+/* Kontener sidebar */
+
+  
+  /* Lista linków w sidebarze */
+  .sidebar nav ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  /* Styl każdego linku */
+  .sidebar nav ul li {
+    margin-bottom: 20px; /* Większa przestrzeń między linkami */
+  }
+  
+  /* Styl aktywnego linku */
+  .sidebar nav ul li a.active {
+    color: #fff; /* Aktywne linki mają kolor fioletowy */
+  }
+  
+  /* Styl linków */
+  .sidebar nav ul li a {
+    text-decoration: none; /* Usunięcie podkreślenia */
+    color: white; /* Kolor ikon i tekstu */
+    font-size: 20px; /* Rozmiar tekstu */
+    display: flex;
+    align-items: center;
+    transition: .15s linear;
+    
+  }
+  .sidebar nav ul li a:hover{
+    color: #2f6bac;
+    background-color: #444;
+  }
+  .sidebar nav ul li:hover{
+    /* color: #2f6bac; */
+    background-color: #444;
+  }
+  svg:not(:root).svg-inline--fa, svg:not(:host).svg-inline--fa {
+/* color: #fff; */
+
+width: 25px;
+  }
+  
+  /* Styl dla ikon Font Awesome */
+  .sidebar nav ul li a svg {
+    margin-right: 10px; /* Odstęp między ikoną a tekstem */
+    font-size: 30px; /* Zwiększenie rozmiaru ikony */
+  }
+  
+  /* Styl aktywnych linków z ikonami */
+  .sidebar nav ul li a.active svg {
+    color: #F00; /* Kolor aktywnej ikony */
+  }
+  .button_logout {
+    background-color: transparent;
+    box-shadow: none;
+    outline: none;
+    border: 0;
+    width: 45px;
+    height: 45px;
+    transition: 0.2s linear;
+    color: #fff;
+  }
+  .py-5{
+    padding: 20px 0;
+  }
+option {
+  text-align: center;
+}
+
+.input-name{
+  width: fit-content;
+}
+.title-box th{
+ text-align: center;
+}
+.version{
+  position: absolute;
+  top: 0;
+  right: 20px;
+  color: #444;
+}
+.button_edit-holder{
+  background-color: #333;
+  border: 3px solid #0056b3;
+  box-shadow: 7px 7px #333, -7px -7px #333,-7px 7px #333,7px -7px #333;
+  padding: 20px 20px 20px 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  position: fixed;
+  top: 85%;
+  left: 50%;
+  border-radius: 20px;
+}
+.status_bg{
+  background-color: #333;
+  padding-top: 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  text-align: center;
+  transition: .2s linear;
+
+}
+.status_bg:hover{
+  box-shadow: inset 3px 3px 10px #000a;
+  /* font-size: 10px; */
+}
+.status_bg select{
+  -webkit-appearance: none; /* Wyłącza strzałkę w przeglądarkach WebKit (Chrome, Safari, etc.) */
+  -moz-appearance: none;    /* Wyłącza strzałkę w Firefox */
+  appearance: none; 
+  transition: .2s linear;
+}
+/* .status_bg:hover select{
+  font-size: 13px;
+} */
+
+.status_done{
+  background-color: var(--accent_grean);
+  border-radius: 20px;
+  padding-top: 10px;
+
+}
+.status_worked{
+  background-color: var(--accent_yellow);
+  border-radius: 20px;
+  padding-top: 10px;
+
+}
+
+.status_done select{
+  color: #555;
+ 
+
+}
+.status_worked select{
+  color: #555;
+ 
+
+}
+.status_suspended{
+  background-color: var(--accent_red);
+  border-radius: 20px;
+  padding-top: 10px;
+}
+.accent-pink{
+  border-left: 15px solid var(--accent_pink);
+  color: var(--accent_pink);
+}
+.accent-red{
+  border-left: 15px solid var(--accent_red);
+  color: var(--accent_red);
+}
+.accent-grean{
+  border-left: 15px solid var(--accent_grean);
+  color: var(--accent_grean);
+}
+.accent-blue{
+  border-left: 15px solid var(--accent_blue);
+  color: var(--accent_blue);
+}
+.accent-yellow{
+  border-left: 15px solid var(--accent_yellow);
+  color: var(--accent_yellow);
+}
+@media (max-width:767px){
+  .input-name{
+    width: max-content;
+  }
+  .contacts-container {
+    /* overflow-x: scroll; */
+    width: max-content;
+  }
+  .main_content{
+    overflow-x: scroll;
+  }
+  .button_edit-holder{
+    
+    top: 70%;
+    left:38%;
+  }
+   
+}

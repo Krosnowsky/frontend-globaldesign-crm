@@ -1,0 +1,164 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+width: 100%;
+
+ /* Układ pionowy dla głównych elementów */
+}
+
+.dashboard-layout {
+  display: flex; /* Układ poziomy dla sidebaru i głównej zawartości */
+  margin-top: 20px; /* Odstęp od górnych elementów */
+  position: relative;
+  /* position: fixed; */
+  overflow: hidden;
+}
+
+.sidebar {
+
+  position: fixed; /* Przylega do lewej strony */
+  top: 35;
+  left: 0;
+  width: 200px;
+  height: 100vh; /* Pełna wysokość ekranu */
+  background-color: #444;
+  padding: 15px;
+  margin-right: 20px;
+border-top-right-radius: 20px;
+box-shadow:inset 2px 2px 5px #000a;
+z-index: 2;
+}
+
+.main-content {
+  padding: 15px;
+  margin-left: 250px;
+  margin-right: 20px;
+  background-color: #444;
+  box-shadow: inset 2px 2px 5px #000a;
+  border-radius: 20px;
+  width: 100%;
+  max-height: 90vh; 
+  min-height: 90vh; 
+  overflow-y: auto; 
+  /* overflow-x: hidden;  */
+  position: relative;
+  z-index: 1;
+  
+  /* Umieszczanie scrollbara wewnątrz kontenera */
+  box-sizing: content-box; /* Uwzględnia padding jako część zawartości */
+  padding-right: 20px; /* Dodanie paddingu na prawo, aby zrobić miejsce na scrollbar */
+}
+
+/* Stylizacja paska przewijania */
+.main-content::-webkit-scrollbar {
+  width: 10px; 
+}
+
+/* Tło paska przewijania */
+.main-content::-webkit-scrollbar-track {
+  background: #555; 
+  border-radius: 10px;
+}
+
+/* Styl uchwytu przewijania (thumb) */
+.main-content::-webkit-scrollbar-thumb {
+  background-color: #888; 
+  border-radius: 10px;
+  border: 2px solid #444; 
+}
+
+
+nav ul {
+  list-style-type: none; /* Usunięcie punktów z listy */
+  padding: 0; /* Usunięcie domyślnego paddingu */
+}
+
+nav ul li {
+  margin-bottom: 10px; /* Odstęp między elementami listy */
+}
+
+nav ul li a {
+  text-decoration: none; /* Usunięcie podkreślenia z linków */
+  color: #007BFF; /* Kolor linków */
+}
+
+nav ul li a:hover {
+  text-decoration: underline; /* Podkreślenie linków przy najeździe */
+}
+.top-header{
+  display: flex;
+  position: fixed;
+  width: 150px;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 20px;
+}
+.top-icon{
+  height: 30px;
+  width: 30px!important;
+  transition: .1s linear;
+  cursor: pointer;
+  /* margin-top: 20px; */
+  /* margin: 0 20px; */
+  /* gap: 20px; */
+  color: #fff;
+}
+.top-icon:hover{
+  transform: scale(1.2);
+  cursor: pointer;
+  color: #007BFF;
+}
+.top-icon:hover svg{
+ 
+  color: #007BFF;
+}
+.task-done{
+  color: greenyellow;
+}
+@media (max-width:767px) {
+  .sidebar {
+
+    position: fixed; /* Przylega do lewej strony */
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: fit-content; 
+    /* display: flex;
+    justify-content: space-around; */
+    background-color: #444;
+    /* padding: 15px; */
+    padding-right: 20px;
+    margin-bottom: -40px;
+  border-top-right-radius: 20px;
+  box-shadow:inset 2px 2px 5px #000a;
+  }
+  .sidebar nav ul {
+    display: flex;
+    justify-content: space-around;
+    margin-right: 20px;
+  }
+  .sidebar .sidebar-link{
+    display: flex;
+    flex-direction: column;
+  }
+ .main-content{
+  margin-left: 0;
+  margin-right: 0;
+ }
+}

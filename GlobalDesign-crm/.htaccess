@@ -1,0 +1,14 @@
+# Ustawienia mod_rewrite
+RewriteEngine On
+
+# Umożliwia dostęp do plików .htaccess
+RewriteBase /
+
+# Przekierowanie wszystkich zapytań na index.php (dla aplikacji SPA)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]
+
+# Opcjonalnie: Jeśli masz statyczne pliki (np. obrazy, CSS, JS), dodaj reguły pozwalające na ich ładowanie:
+RewriteCond %{REQUEST_FILENAME} \.(jpg|jpeg|png|gif|css|js|html)$
+RewriteRule ^ - [L]

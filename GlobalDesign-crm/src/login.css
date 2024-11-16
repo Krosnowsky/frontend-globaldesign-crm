@@ -1,0 +1,88 @@
+.login-container {
+    max-width: 400px;
+    margin: 150px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+}
+.login-container p {
+    color: #000;
+}
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #000;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Wyśrodkowanie elementów wewnątrz formularza */
+}
+
+.form-group {
+    margin-bottom: 15px;
+    width: 100%; /* Ustawienie szerokości na 100% */
+    display: flex; /* Flex dla form-group */
+    flex-direction: column; /* Ustawienie w kolumnie */
+    align-items: center; /* Wyśrodkowanie elementów w form-group */
+}
+
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    text-align: center; /* Wyśrodkowanie etykiety */
+    color: #000;
+}
+
+.form-input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    width: 100%; /* Szerokość na 100% kontenera .form-group */
+    max-width: 300px; /* Maksymalna szerokość inputu */
+}
+
+.form-input:focus {
+    border-color: #007BFF;
+    outline: none;
+}
+
+.login-button {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007BFF;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%; /* Szerokość na 100% kontenera */
+    max-width: 300px; /* Maksymalna szerokość przycisku */
+}
+
+.login-button:hover {
+    background-color: #0056b3;
+}
+
+.status-message {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.status-message.success {
+    color: green;
+}
+
+.status-message.error {
+    color: red;
+}
+.logo {
+    display: block; /* Wyświetlanie jako blok */
+    margin: 0 auto 20px; /* Wyśrodkowanie z marginesem na dole */
+    max-width: 40%; /* Upewnienie się, że nie wykracza poza kontener */
+    height: auto; /* Automatyczna wysokość, aby zachować proporcje */
+}
