@@ -1,34 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import './style.css'; // Importuj plik CSS
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import './style.css';
 
 function Leads() {
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [name, setName] = useState('');
-  const [mail, setMail] = useState('');
-  const [phone, setPhone] = useState(''); // Stan dla telefonu
   const [selectedContacts, setSelectedContacts] = useState(new Set());
   const [editingContactId, setEditingContactId] = useState(null);
-  const [editingName, setEditingName] = useState('');
-  const [editingMail, setEditingMail] = useState('');
-  const [editingPhone, setEditingPhone] = useState(''); // Stan dla edytowanego telefonu
-  const [editingStatus, setEditingStatus] = useState('none'); // Stan dla edytowanego statusu
+  const [editingValues, setEditingValues] = useState({});
+  
+  const [newContact, setNewContact] = useState({
+    contactname: '',
+    mail: '',
+    phone: '',
+    comments: '',
+    region: '',
+  });
+  const [addStep, setAddStep] = useState(0);
 
-  // Fetchowanie danych kontaktów z API
   useEffect(() => {
     const fetchContacts = async () => {
       try {
-        const response = await fetch('https://crm.kros-media.pl/contacts.php');
-        if (!response.ok) {
-          throw new Error('Błąd w pobieraniu danych');
-        }
+        const response = await fetch('https://crm.kros-media.pl/leads.php');
+        if (!response.ok) throw new Error('Błąd w pobieraniu danych');
         const data = await response.json();
-        if (data && data.data) {
-          setContacts(data.data);
-        } else {
-          throw new Error('Nieprawidłowe dane');
-        }
+        setContacts(data.data || []);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -39,24 +37,31 @@ function Leads() {
     fetchContacts();
   }, []);
 
-  // Dodawanie nowego kontaktu
   const handleAddContact = async () => {
-    if (!name || !mail || !phone) return; // Upewnij się, że pola są wypełnione
+    // Sprawdź tylko, czy podano imię
+    if (!newContact.contactname) {
+      setError("Imię jest wymagane.");
+      return;
+    }
     try {
-      const response = await fetch('https://crm.kros-media.pl/contacts.php', {
+      const response = await fetch('https://crm.kros-media.pl/leads.php', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ contactname: name, mail, phone, status: 'none' }), // Dodaj status
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...newContact, status: 'none' }),
       });
       const data = await response.json();
-
+  
       if (data.success) {
-        setContacts((prevContacts) => [...prevContacts, { contactname: name, mail, phone, Id: data.newId, status: 'none' }]);
-        setName('');
-        setMail('');
-        setPhone(''); // Resetowanie pola telefonu
+        setContacts((prev) => [
+          ...prev,
+          { ...newContact, Id: data.newId, status: 'none' },
+        ]);
+        setNewContact((prev) => ({
+          ...prev,
+          contactname: '', // Zresetuj tylko imię
+        }));
+        setAddStep(1); // Przejdź do kolejnego kroku
+        setError(null); // Wyczyść ewentualny poprzedni błąd
       } else {
         setError(data.message);
       }
@@ -64,38 +69,91 @@ function Leads() {
       setError('Błąd podczas dodawania kontaktu.');
     }
   };
+  
 
-  // Obsługuje zmianę wyboru kontaktu (zaznaczenie/odznaczenie)
-  const handleSelectContact = (id) => {
-    const updatedSelectedContacts = new Set(selectedContacts);
-    if (updatedSelectedContacts.has(id)) {
-      updatedSelectedContacts.delete(id);
+  const handleInputBlur = (step) => {
+    if (step === 0) {
+      handleAddContact();
     } else {
-      updatedSelectedContacts.add(id);
+      setAddStep((prev) => prev + 1);
     }
-    setSelectedContacts(updatedSelectedContacts);
   };
 
-  // Usuwanie zaznaczonych kontaktów
-  const handleDeleteContacts = async () => {
-    const idsToDelete = Array.from(selectedContacts);
-    if (idsToDelete.length === 0) {
-      setError('Nie zaznaczone żadnego kontaktu do usunięcia.');
-      return;
+  const handleEditContact = (contact) => {
+    setEditingContactId(contact.Id);
+    setEditingValues({
+      contactname: contact.contactname,
+      mail: contact.mail,
+      phone: contact.phone,
+      comments: contact.comments,
+      region: contact.region,
+      status: contact.status,
+    });
+  };
+  const handleTransferToNewDatabase = async () => {
+    const idsToTransfer = Array.from(selectedContacts);
+    try {
+      // Przesyłanie danych do nowej bazy (X9k3L2pQ8v4W1mN7)
+      const response = await fetch('https://crm.kros-media.pl/moveContacts.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: idsToTransfer, database: 'X9k3L2pQ8v4W1mN7' }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        // Usuwanie kontaktów z aktualnej bazy
+        await handleDeleteSelectedContacts();
+        setError(null);
+      } else {
+        setError(data.message);
+      }
+    } catch (error) {
+      setError('Błąd podczas przenoszenia kontaktów.');
     }
+  };
+
+  const handleUpdateContact = async (id) => {
+    if (!editingContactId) return;
 
     try {
-      const response = await fetch('https://crm.kros-media.pl/contacts.php', {
+      const response = await fetch('https://crm.kros-media.pl/leads.php', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, ...editingValues }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        setContacts((prev) =>
+          prev.map((contact) =>
+            contact.Id === id ? { ...contact, ...editingValues } : contact
+          )
+        );
+        setEditingContactId(null);
+        setEditingValues({});
+      } else {
+        setError(data.message);
+      }
+    } catch (error) {
+      setError('Błąd podczas aktualizacji kontaktu.');
+    }
+  };
+
+  const handleDeleteSelectedContacts = async () => {
+    const idsToDelete = Array.from(selectedContacts);
+    try {
+      const response = await fetch('https://crm.kros-media.pl/leads.php', {
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids: idsToDelete }),
       });
       const data = await response.json();
 
       if (data.success) {
-        setContacts((prevContacts) => prevContacts.filter(contact => !idsToDelete.includes(contact.Id)));
+        setContacts((prev) =>
+          prev.filter((contact) => !selectedContacts.has(contact.Id))
+        );
         setSelectedContacts(new Set());
       } else {
         setError(data.message);
@@ -105,160 +163,240 @@ function Leads() {
     }
   };
 
-  // Edytowanie kontaktu
-  const handleEditContact = (contact) => {
-    if (editingContactId === contact.Id) {
-      setEditingContactId(null); // Jeśli kontakt już edytujemy, zakończ edycję
-    } else {
-      setEditingContactId(contact.Id);
-      setEditingName(contact.contactname);
-      setEditingMail(contact.mail);
-      setEditingPhone(contact.phone); // Ustawienie edytowanego telefonu
-      setEditingStatus(contact.status); // Ustawienie edytowanego statusu
-    }
-  };
-
-  // Aktualizacja kontaktu
-  const handleUpdateContact = async (id) => {
-    try {
-      const response = await fetch('https://crm.kros-media.pl/contacts.php', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id, contactname: editingName, mail: editingMail, phone: editingPhone, status: editingStatus }),
-      });
-      const data = await response.json();
-
-      if (data.success) {
-        setContacts((prevContacts) =>
-          prevContacts.map(contact =>
-            contact.Id === id ? { ...contact, contactname: editingName, mail: editingMail, phone: editingPhone, status: editingStatus } : contact
-          )
-        );
-        setEditingContactId(null);
-        setEditingName('');
-        setEditingMail('');
-        setEditingPhone('');
-        setEditingStatus('none');
-      } else {
-        setError(data.message);
-      }
-    } catch (error) {
-      setError('Błąd podczas aktualizacji kontaktu.');
-    }
-  };
-
-  if (loading) {
-    return <p>Ładowanie kontaktów...</p>;
-  }
-
-  if (error) {
-    return <p style={{ color: 'red' }}>Błąd: {error}</p>;
-  }
+  if (loading) return <p>Ładowanie kontaktów...</p>;
+  if (error) return <p style={{ color: 'red' }}>Błąd: {error}</p>;
 
   return (
-    <div className="contacts-container">
-      <h2>Leady</h2>
-      <table>
-        <thead>
-          <tr>
-            <th className="checkbox-column"></th>
-            <th>Nazwa</th>
-            <th>Email</th>
-            <th>Telefon</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {contacts.map((contact) => (
-            <tr key={contact.Id}>
-              <td className="checkbox-column">
-                <input
-                  type="checkbox"
-                  checked={selectedContacts.has(contact.Id)}
-                  onChange={() => handleSelectContact(contact.Id)}
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  value={editingContactId === contact.Id ? editingName : contact.contactname}
-                  onChange={(e) => setEditingName(e.target.value)}
-                  onFocus={() => handleEditContact(contact)} 
-                  onBlur={() => handleUpdateContact(contact.Id)} 
-                />
-              </td>
-              <td>
-                <input
-                  type="email"
-                  value={editingContactId === contact.Id ? editingMail : contact.mail}
-                  onChange={(e) => setEditingMail(e.target.value)}
-                  onFocus={() => handleEditContact(contact)} 
-                  onBlur={() => handleUpdateContact(contact.Id)} 
-                />
-              </td>
-              <td>
-                <input
-                  type="tel"
-                  value={editingContactId === contact.Id ? editingPhone : contact.phone}
-                  onChange={(e) => setEditingPhone(e.target.value)}
-                  onFocus={() => handleEditContact(contact)} 
-                  onBlur={() => handleUpdateContact(contact.Id)} 
-                />
-              </td>
-              <td>
-                <select
-                  value={editingContactId === contact.Id ? editingStatus : contact.status}
-                  onChange={(e) => setEditingStatus(e.target.value)}
-                  onFocus={() => handleEditContact(contact)} 
-                  onBlur={() => handleUpdateContact(contact.Id)} 
-                >
-                  <option value="none">none</option>
-                  <option value="zrobione">zrobione</option>
-                  <option value="wstrzymane">wstrzymane</option>
-                </select>
-              </td>
+    <div>
+      <h2 className="table_title leads">Potencjalne Kontakty</h2>
+      <div className="contacts-container leads">
+        <table>
+          <thead>
+            <tr>
+              <th className="checkbox-column"></th>
+              <th>Imię</th>
+              <th>Komentarz</th>
+              <th>Region</th>
+              <th>Email</th>
+              <th>Telefon</th>
+              <th>Status</th>
             </tr>
-          ))}
-          <tr>
-            <td></td>
-            <td>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Nazwa"
-              />
-            </td>
-            {name && (
-              <>
+          </thead>
+          <tbody>
+            {contacts.map((contact) => (
+              <tr key={contact.Id}>
+                <td className="checkbox-column">
+                  <input
+                    type="checkbox"
+                    checked={selectedContacts.has(contact.Id)}
+                    onChange={() =>
+                      setSelectedContacts((prev) => {
+                        const updated = new Set(prev);
+                        updated.has(contact.Id)
+                          ? updated.delete(contact.Id)
+                          : updated.add(contact.Id);
+                        return updated;
+                      })
+                    }
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    value={
+                      editingContactId === contact.Id
+                        ? editingValues.contactname
+                        : contact.contactname
+                    }
+                    onChange={(e) =>
+                      setEditingValues((prev) => ({
+                        ...prev,
+                        contactname: e.target.value,
+                      }))
+                    }
+                    onFocus={() => handleEditContact(contact)}
+                    onBlur={() => handleUpdateContact(contact.Id)}
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    value={
+                      editingContactId === contact.Id
+                        ? editingValues.comments
+                        : contact.comments
+                    }
+                    onChange={(e) =>
+                      setEditingValues((prev) => ({
+                        ...prev,
+                        comments: e.target.value,
+                      }))
+                    }
+                    onFocus={() => handleEditContact(contact)}
+                    onBlur={() => handleUpdateContact(contact.Id)}
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    value={
+                      editingContactId === contact.Id
+                        ? editingValues.region
+                        : contact.region
+                    }
+                    onChange={(e) =>
+                      setEditingValues((prev) => ({
+                        ...prev,
+                        region: e.target.value,
+                      }))
+                    }
+                    onFocus={() => handleEditContact(contact)}
+                    onBlur={() => handleUpdateContact(contact.Id)}
+                  />
+                </td>
                 <td>
                   <input
                     type="email"
-                    value={mail}
-                    onChange={(e) => setMail(e.target.value)}
-                    placeholder="Email"
+                    value={
+                      editingContactId === contact.Id
+                        ? editingValues.mail
+                        : contact.mail
+                    }
+                    onChange={(e) =>
+                      setEditingValues((prev) => ({
+                        ...prev,
+                        mail: e.target.value,
+                      }))
+                    }
+                    onFocus={() => handleEditContact(contact)}
+                    onBlur={() => handleUpdateContact(contact.Id)}
                   />
                 </td>
                 <td>
                   <input
                     type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="Telefon"
+                    value={
+                      editingContactId === contact.Id
+                        ? editingValues.phone
+                        : contact.phone
+                    }
+                    onChange={(e) =>
+                      setEditingValues((prev) => ({
+                        ...prev,
+                        phone: e.target.value,
+                      }))
+                    }
+                    onFocus={() => handleEditContact(contact)}
+                    onBlur={() => handleUpdateContact(contact.Id)}
                   />
                 </td>
-              </>
-            )}
-            <td>
-              <button onClick={handleAddContact}>Dodaj kontakt</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                <td>
+                  <select
+                    value={
+                      editingContactId === contact.Id
+                        ? editingValues.status
+                        : contact.status
+                    }
+                    onChange={(e) =>
+                      setEditingValues((prev) => ({
+                        ...prev,
+                        status: e.target.value,
+                      }))
+                    }
+                    onFocus={() => handleEditContact(contact)}
+                    onBlur={() => handleUpdateContact(contact.Id)}
+                  >
+                    <option value="none">Brak</option>
+                    <option value="Zaofertowany">Zaofertowany</option>
+                    <option value="Negocjacje">Negocjacje</option>
+                    <option value="Poszukiwanie lokalizacji">Poszukiwanie lokalizacji</option>
+                    <option value="Umowa wstępna">Umowa wstępna</option>
+                  </select>
+                </td>
+              </tr>
+            ))}
+            {/* Formularz dodawania nowego kontaktu */}
+            <tr>
+              <td></td>
+              <td>
+                <input
+                  type="text"
+                  value={newContact.contactname}
+                  onChange={(e) =>
+                    setNewContact((prev) => ({
+                      ...prev,
+                      contactname: e.target.value,
+                    }))
+                  }
+                  onBlur={() => handleInputBlur(0)}
+                  placeholder="Dodaj kontakt +"
+                />
+              </td>
+              {addStep >= 1 && (
+                <>
+                  <td>
+                    <input
+                      type="text"
+                      value={newContact.comments}
+                      onChange={(e) =>
+                        setNewContact((prev) => ({
+                          ...prev,
+                          comments: e.target.value,
+                        }))
+                      }
+                      placeholder="Komentarz"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      value={newContact.region}
+                      onChange={(e) =>
+                        setNewContact((prev) => ({
+                          ...prev,
+                          region: e.target.value,
+                        }))
+                      }
+                      placeholder="Region"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="email"
+                      value={newContact.mail}
+                      onChange={(e) =>
+                        setNewContact((prev) => ({
+                          ...prev,
+                          mail: e.target.value,
+                        }))
+                      }
+                      placeholder="Email"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="tel"
+                      value={newContact.phone}
+                      onChange={(e) =>
+                        setNewContact((prev) => ({
+                          ...prev,
+                          phone: e.target.value,
+                        }))
+                      }
+                      placeholder="Telefon"
+                    />
+                  </td>
+                </>
+              )}
+            </tr>
+          </tbody>
+        </table>
+      </div>
       {selectedContacts.size > 0 && (
-        <button onClick={handleDeleteContacts}>Usuń zaznaczone</button>
+        
+        <div className='button_edit-holder' style={{ marginTop: '20px' }}>
+        <button className='trash_btn' onClick={handleDeleteSelectedContacts}><FontAwesomeIcon icon={faTrash} /> <br /> Usuń</button>
+      </div>
       )}
     </div>
   );

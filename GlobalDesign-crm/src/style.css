@@ -6,7 +6,7 @@
   --accent_yellow:#F2CE16;
 }
 
-/* Styl dla całego kontenera kontaktów */
+
 body{
     background-color: #333;
     color: #fff;
@@ -16,12 +16,38 @@ body{
 .contacts-container {
     margin: 20px;
     font-family: Arial, sans-serif;
-    /* border-left: 15px solid var(--accent_color); */
+
     border-top: 1px solid #333;
     border-bottom: 1px solid #333;
     border-right: 1px solid #333;
-  /* overflow: hidden; */
+
     border-radius: 20px
+;
+
+}
+
+.leads {
+    
+    border-left: 15px solid var(--accent_yellow);
+    color: var(--accent_yellow)
+
+;
+
+}
+.tasks {
+    
+    border-left: 15px solid var(--accent_grean);
+    color: var(--accent_grean);
+
+;
+
+}
+
+.contacts {
+    
+    border-left: 15px solid var(--accent_blue);
+    color: var(--accent_blue)
+
 ;
 
 }
@@ -29,9 +55,9 @@ body{
 h2{
   text-align: center;
 }
-/* Styl dla nagłówka */
+
 .table_title {
-    /* color: var(--accent_color); */
+
     border-left: none!important;
     text-shadow: 1px 2px 15px #000a;
     text-align: start;
@@ -39,7 +65,7 @@ h2{
    
 }
 
-/* Styl dla formularza */
+
 .contacts-container form {
     margin-bottom: 20px;
     padding: 15px;
@@ -49,7 +75,7 @@ h2{
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Styl dla etykiet i pól formularza */
+
 .contacts-container label {
     display: block;
     margin-bottom: 5px;
@@ -75,7 +101,7 @@ h2{
   
   text-align: center;
   background-color: #333!important;
-  /* width: fit-content!important; */
+
   padding:20px 10px!important;
   border-radius:  20px!important;
 }
@@ -88,7 +114,7 @@ h2{
   font-weight: bold;
 }
 
-/* Styl dla przycisków */
+ 
 .options_btn {
     padding: 10px 15px;
     background-color: transparent;
@@ -98,6 +124,41 @@ h2{
     cursor: pointer;
     margin-left: 20px;
     
+}
+.trash_btn{
+   padding: 10px 15px;
+   background-color: transparent;
+   color: white;
+   border: none;
+   /* width: 50px;
+   height: 50px; */
+   /* border-radius: 4px; */
+   cursor: pointer;
+   /* margin-left: 20px; */
+
+}
+.trash_btn svg {
+    /* padding: 10px 15px; */
+    background-color: transparent;
+    color: white;
+    border: none;
+    width: 50px;
+    height: 50px;
+    /* border-radius: 4px; */
+    cursor: pointer;
+    /* margin-left: 20px; */
+
+    
+}
+.trash_btn:hover{
+  transform: scale(1.04);
+
+  border-radius: 20px;
+}
+.trash_btn:hover svg{
+
+  color: var(--accent_red);
+  
 }
 
 .options_btn:hover {
@@ -198,7 +259,61 @@ h2{
   .sidebar nav ul li a.active {
     color: #fff; /* Aktywne linki mają kolor fioletowy */
   }
-  
+  :where(.css-dev-only-do-not-override-1x0dypw).ant-table-wrapper .ant-table-container{
+    border-left: #2994C4 20px solid;
+    background: #000a;
+    color: #fff;
+    border-radius: 10px;
+  }
+  :where(.css-dev-only-do-not-override-1x0dypw).ant-table-wrapper .ant-table-tbody .ant-table-row > .ant-table-cell-row-hover{
+  background: #00000032;
+}
+:where(.css-dev-only-do-not-override-1x0dypw).ant-table-wrapper .ant-table-container table>thead>tr:first-child >*:first-child{
+  border-start-start-radius: 0;
+}
+:where(.css-dev-only-do-not-override-1x0dypw).ant-table-wrapper .ant-table{
+  border-radius: 10px;
+}
+/* .table_title{
+  color: #2994C4;
+} */ 
+.table_title-leads{
+  color: #F2CE16;
+  text-align: start;
+  padding-left: 45px;
+}
+/* Styl dla nawigacji */
+.sidebar {
+  /* Twoje style dla paska bocznego */
+}
+
+/* Styl dla linków w menu */
+.sidebar-link {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: black;
+}
+
+/* Styl aktywnego linku */
+.sidebar-link.active-link {
+  /* background-color: #f0f0f0; Kolor tła aktywnego linku */
+  border-right: 5px solid var(--accent_blue);
+  border-radius: 10px;
+  background-color: #00000052;
+}
+
+/* Styl dla aktywnej ikony */
+.sidebar-link.active-link svg {
+  color: white; /* Kolor ikony FontAwesome na czerwono */
+}
+
+/* Dodatkowe style (opcjonalnie) */
+.sidebar-link:hover {
+  /* background-color: #e0e0e0; Kolor tła przy najechaniu */
+}
+
+
   /* Styl linków */
   .sidebar nav ul li a {
     text-decoration: none; /* Usunięcie podkreślenia */
@@ -210,8 +325,8 @@ h2{
     
   }
   .sidebar nav ul li a:hover{
-    color: #2f6bac;
-    background-color: #444;
+    color: var(--accent_blue);
+    /* background-color: #444; */
   }
   .sidebar nav ul li:hover{
     /* color: #2f6bac; */
@@ -233,6 +348,7 @@ width: 25px;
   .sidebar nav ul li a.active svg {
     color: #F00; /* Kolor aktywnej ikony */
   }
+  
   .button_logout {
     background-color: transparent;
     box-shadow: none;
@@ -272,9 +388,10 @@ option {
   align-items: center;
   width: fit-content;
   position: fixed;
-  top: 85%;
+  top: 75%;
   left: 50%;
   border-radius: 20px;
+ padding-left: 20px;
 }
 .status_bg{
   background-color: #333;

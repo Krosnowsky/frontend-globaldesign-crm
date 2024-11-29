@@ -1,39 +1,40 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAddressBook, faUserCircle, faTasks, faUserPlus,faPowerOff } from '@fortawesome/free-solid-svg-icons'; // Importowanie ikon
+import { faAddressBook, faUserCircle, faTasks, faUserPlus, faPowerOff, faLocationDot } from '@fortawesome/free-solid-svg-icons'; 
 
 import Contacts from './Contacts';
 import Leads from './Leads';
 import Tasks from './Zadania';
-import AddUser from './addUsers'; // Importuj komponent AddUser
+import AddUser from './addUsers'; 
+import Localization from './localization';
+
+import './style.css'; // Import zewnętrznego pliku CSS
 
 function Dashboard({ onLogout }) {
   const handleLogout = () => {
-    localStorage.removeItem('isLoggedIn'); // Usuwanie statusu logowania
-    localStorage.removeItem('permissions'); // Usunięcie uprawnień z localStorage
-    onLogout(); // Aktualizacja stanu w głównym komponencie
+    localStorage.removeItem('isLoggedIn'); 
+    localStorage.removeItem('permissions'); 
+    onLogout(); 
   };
 
-  // Odczyt uprawnień z localStorage
   const permissions = localStorage.getItem('permissions');
 
   return (
     <Router>
       <div className="dashboard-container">
         <h2 className='py-5'></h2>
-        <p className='version'>Ver. Alfa 0.2.4</p>
-
+        <p className='version'>Ver. Alfa 0.7.8</p>
 
         <div className='top-header'>
-          <button className='button_logout' onClick={handleLogout}><FontAwesomeIcon className="top-icon" icon={faPowerOff} /></button>
-          
-          {/* Sprawdzenie uprawnień przed wyświetleniem przycisku */}
+          <button className='button_logout' onClick={handleLogout}>
+            <FontAwesomeIcon className="top-icon" icon={faPowerOff} />
+          </button>
+
           {permissions === 'admin' && (
-            <Link to="/add-user">
-              
+            <NavLink to="/add-user">
               <FontAwesomeIcon className="top-icon" icon={faUserPlus} />
-            </Link>
+            </NavLink>
           )}
         </div>
 
@@ -42,19 +43,36 @@ function Dashboard({ onLogout }) {
             <nav>
               <ul>
                 <li>
-                  <Link className="sidebar-link" to="/contacts">
+                  <NavLink 
+                    to="/contacts" 
+                    className={({ isActive }) => isActive ? 'sidebar-link active-link' : 'sidebar-link'}  // Nowa metoda na dynamiczne przypisanie klasy
+                  >
                     <FontAwesomeIcon icon={faAddressBook} /> Kontakty
-                  </Link>
+                  </NavLink>
                 </li>
                 <li>
-                  <Link className="sidebar-link" to="/leads">
-                    <FontAwesomeIcon icon={faUserCircle} />Leady
-                  </Link>
+                  <NavLink 
+                    to="/leads" 
+                    className={({ isActive }) => isActive ? 'sidebar-link active-link' : 'sidebar-link'}
+                  >
+                    <FontAwesomeIcon icon={faUserCircle} /> Potencjalne Kontakty
+                  </NavLink>
                 </li>
                 <li>
-                  <Link  className="sidebar-link" to="/tasks">
+                  <NavLink 
+                    to="/tasks" 
+                    className={({ isActive }) => isActive ? 'sidebar-link active-link' : 'sidebar-link'}
+                  >
                     <FontAwesomeIcon icon={faTasks} /> Zadania
-                  </Link>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink 
+                    to="/localization" 
+                    className={({ isActive }) => isActive ? 'sidebar-link active-link' : 'sidebar-link'}
+                  >
+                    <FontAwesomeIcon icon={faLocationDot} /> Lokalizacje
+                  </NavLink>
                 </li>
               </ul>
             </nav>
@@ -65,7 +83,8 @@ function Dashboard({ onLogout }) {
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/leads" element={<Leads />} />
               <Route path="/tasks" element={<Tasks />} />
-              <Route path="/add-user" element={<AddUser />} /> {/* Trasa do komponentu AddUser */}
+              <Route path="/add-user" element={<AddUser />} /> 
+              <Route path="/localization" element={<Localization />} /> 
             </Routes>
           </main>
         </div>

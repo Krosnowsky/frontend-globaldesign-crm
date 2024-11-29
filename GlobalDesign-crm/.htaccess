@@ -1,14 +1,40 @@
-# Ustawienia mod_rewrite
+# Włączenie mod_rewrite, aby umożliwić przepisywanie URL
 RewriteEngine On
 
-# Umożliwia dostęp do plików .htaccess
-RewriteBase /
+# Zabezpieczenie przed dostępem do plików .htaccess i innych ukrytych plików
+<Files .htaccess>
+    Order Allow,Deny
+    Deny from all
+</Files>
 
-# Przekierowanie wszystkich zapytań na index.php (dla aplikacji SPA)
+# Obsługuje odświeżanie stron dla aplikacji SPA (React)
+# Jeśli żądany plik nie istnieje, przekieruj do index.html
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.php [QSA,L]
+RewriteRule ^ index.html [QSA,L]
 
-# Opcjonalnie: Jeśli masz statyczne pliki (np. obrazy, CSS, JS), dodaj reguły pozwalające na ich ładowanie:
-RewriteCond %{REQUEST_FILENAME} \.(jpg|jpeg|png|gif|css|js|html)$
-RewriteRule ^ - [L]
+# Opcjonalnie, jeśli chcesz ustawić cache dla plików statycznych (CSS, JS, obrazy)
+# Możesz dostosować czasy cache, aby poprawić wydajność
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 year"
+    
+    # CSS, JS, i obrazy: 1 rok
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType application/font-woff "access plus 1 year"
+    ExpiresByType application/font-woff2 "access plus 1 year"
+</IfModule>
+
+# Wymusi HTTPS, jeśli Twoja aplikacja jest używana z protokołem HTTPS (opcjonalnie)
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Obsługuje błędy 404 (nie znaleziono)
+ErrorDocument 404 /index.html
